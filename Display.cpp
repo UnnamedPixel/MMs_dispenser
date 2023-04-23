@@ -1,6 +1,6 @@
 
 #include "Display.h"
-
+ 
 Display::Display(int n):Driver(n),lcd(){
 }
 

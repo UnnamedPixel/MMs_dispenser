@@ -1,8 +1,6 @@
-#ifndef MAIN_H
-#define MAIN_H
-
-#include "Color.h"
-
+#ifndef MMS_dispenser_h
+#define MMS_dispenser_h
+ 
 #include "Display.h"
 
 

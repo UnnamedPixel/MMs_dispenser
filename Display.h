@@ -6,7 +6,7 @@
     #include "rgb_lcd.h"
     #include <Wire.h>
 
-
+ 
     using namespace std;
 
     class Display : protected Driver {
