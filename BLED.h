@@ -1,16 +1,13 @@
-#ifndef BLED_H
-#define BLED_H
+  #ifndef BLED_H
+  #define BLED_H
 
-#include "Actuator.h"
-//#include "Digital.h"
-#include <FastLED.h>
-#include <vector>
+  #include "Actuator.h"
+  #include <FastLED.h>
+  #include <vector>
 
-using namespace std;
+  using namespace std;
 
-//class BLED : protected Actuator, protected Digital {
-
-class BLED : protected Actuator {
+  class BLED : protected Actuator {
   private:
     int nb_led;
     CRGB leds[10];
@@ -18,8 +15,6 @@ class BLED : protected Actuator {
     BLED(int nport, int nbLED);
     void setup();
     void display(vector<int> colortab);
+  };
 
-};
-
-#endif
- 
+  #endif
