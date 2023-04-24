@@ -1,8 +1,8 @@
 #include "MMS_dispenser.h"
+#include "BLED.cpp"
+#define BLED_DATA_PIN D6
 
-#define BLED_DATA_PIN D5
-
-BLED Banc(D6,6);
+BLED<BLED_DATA_PIN> Banc(BLED_DATA_PIN,6);
 vector<int> tabint1  = {0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow};
 vector<int> tabint2  = {CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE};
 
