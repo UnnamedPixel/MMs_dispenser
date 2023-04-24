@@ -14,3 +14,5 @@ void Display::Print(String mess, int t)
     delay(t);
     lcd.clear();
 }
+
+int Display::getINOUT(){return -1;}
