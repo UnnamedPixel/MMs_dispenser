@@ -1,18 +1,17 @@
 #include "MMS_dispenser.h"
+#include "motor.cpp"
 
-#define BLED_DATA_PIN D5
+#define MOTOR_DATA_PIN D7
 
-BLED Banc(D6,6);
-vector<int> tabint1  = {0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow};
-vector<int> tabint2  = {CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE};
+Motor<MOTOR_DATA_PIN> theMOTOR(D7);
 
-void setup(){
-  Banc.setup();
+void setup() {
+  theMOTOR.setup();
 }
 
-void loop(){    
-    Banc.display(tabint1);
-    delay(1500);
-    Banc.display(tabint2);
-    delay(1500);
+void loop() {
+  theMOTOR.move2pos(120);
+  delay(2000);
+  theMOTOR.move2pos(20);
+  delay(2000);
 }
