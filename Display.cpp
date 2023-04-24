@@ -10,7 +10,7 @@ void Display::setup(){
 }
 void Display::Print(String mess, int t)
 {
-    lcd.print((const String)mess); // afficher le message "Bonjour!" sur l'écran
+    lcd.print((const String)mess); // afficher le message mess on the screen
     delay(t);
     lcd.clear();
 }

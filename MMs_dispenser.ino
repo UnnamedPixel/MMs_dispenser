@@ -1,14 +1,12 @@
 #include "MMS_dispenser.h"
  
-Display Ecran(0);
-//BLED Banc(5,10);
+BLED Banc(5,6);
+vector<int> tabint  = {0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow};
 void setup(){
-  Ecran.setup();
-  
+  Banc.setup();
 }
 
-void loop(){
-    Ecran.Print("bonjour",400);
-    delay(10000);
-
+void loop(){    
+    Banc.display(tabint);
+    delay(5000);
 }
