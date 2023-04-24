@@ -2,9 +2,13 @@
 #define MMS_dispenser_h
  
 #include "Display.h"
+
 #include <FASTLED.h>
 #include "BLED.h"
+
 #include "Motor.h"
+
+#include "Speaker.h"
 
 
 
