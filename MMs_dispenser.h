@@ -10,6 +10,9 @@
 
 #include "Speaker.h"
 
+#include "Melodies.h"
+
+#include "Melody.h"
 
 
 

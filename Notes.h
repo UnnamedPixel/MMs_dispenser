@@ -1,6 +1,5 @@
-#include "MMS_dispenser.h"
-//#include "BLED.cpp"
-//#include "motor.cpp"
+#ifndef NOTES_H
+#define NOTES_H
 
 #define NOTE_B0  31
 #define NOTE_C1  33
@@ -92,36 +91,4 @@
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
 
-//#define BLED_DATA_PIN D6
-//#define MOTOR_DATA_PIN D7
-/*
-BLED<BLED_DATA_PIN> Banc(BLED_DATA_PIN,6);
-Motor<MOTOR_DATA_PIN> theMOTOR(MOTOR_DATA_PIN);*/
-Speaker LEnceinte(D6);
-
-//vector<int> tabint1  = {0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow};
-//vector<int> tabint2  = {CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE};
-int duration1 = 150;
-int pause = 100;
-
-void setup() {
-  /*Banc.setup();
-  //theMOTOR.setup();*/
-  LEnceinte.setup();
-  //pinMode(D8,OUTPUT);
-  //LEnceinte.playTone(1500,1500);
-
-}
-
-void loop() {
-  //theMOTOR.move2pos(120);
-  //Banc.display(tabint1);
-  //LEnceinte.playTone(1500,1500);
-  LEnceinte.playMelody(Loser);
-  delay(10000);
-  //delay(2500);*/
-  //theMOTOR.move2pos(20);
-  //Banc.display(tabint2);
-  //delay(2500);
-  //delay(10000);
-}
+#endif
