@@ -5,13 +5,18 @@
 
 
 class Melody {
-  public:
-    int nbNotes;
-    int * Notes;
-    int * NotesDuration;
-    int * DelayAfterNotes;
-  Melody(int nbN, int * N, int * NDuration, int * DelayAfterN);
-  Melody(int nbN, int * N, int * NDuration);
+public:
+  int nbNotes;
+  int* Notes;
+  int* NotesDuration;
+  int* DelayAfterNotes;
+
+  Melody(int nbN, int* N, int* NDuration);
+  Melody(int nbN, int* N, int* NDuration, int* DelayAfterN);
+  Melody(int nbN, int* N, int* NDuration, int DelayAfterN);
+  Melody(int nbN, int* N, int NDuration, int* DelayAfterN);
+  Melody(int nbN, int* N, int NDuration, int DelayAfterN);
+
   ~Melody();
 };
 
