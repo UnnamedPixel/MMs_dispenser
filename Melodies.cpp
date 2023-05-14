@@ -16,8 +16,6 @@ int JOJO_duration = 100;
 
 int JOJO_delay = JOJO_duration * 1.2;
 
-Melody JOJO(511, JOJO_notes, JOJO_duration, JOJO_delay);
-
 int start_notes[54] = {
   NOTE_C4, NOTE_G4, NOTE_E5, NOTE_C5, NOTE_C4, NOTE_G4, NOTE_E5, NOTE_C5,
   NOTE_FS4, REST, REST, NOTE_E4, NOTE_G4, NOTE_D5, NOTE_A4, NOTE_G4,
@@ -38,5 +36,28 @@ int start_duration[54] = {
 };
 
 
+int winner_notes[96] = {NOTE_FS5, NOTE_FS5, NOTE_D5, NOTE_B4, REST, NOTE_B4, REST, NOTE_E5, 
+                    REST, NOTE_E5, REST, NOTE_E5, NOTE_GS5, NOTE_GS5, NOTE_A5, NOTE_B5, 
+                    NOTE_A5, NOTE_A5, NOTE_A5, NOTE_E5, REST, NOTE_D5, REST, NOTE_FS5, 
+                    REST, NOTE_FS5, REST, NOTE_FS5, NOTE_E5, NOTE_E5, NOTE_FS5, NOTE_E5,
+                    NOTE_FS5, NOTE_FS5, NOTE_D5, NOTE_B4, REST, NOTE_B4, REST, NOTE_E5, 
+                    REST, NOTE_E5, REST, NOTE_E5, NOTE_GS5, NOTE_GS5, NOTE_A5, NOTE_B5,
+                    NOTE_A5, NOTE_A5, NOTE_A5, NOTE_E5, REST, NOTE_D5, REST, NOTE_FS5, 
+                    REST, NOTE_FS5, REST, NOTE_FS5, NOTE_E5, NOTE_E5, NOTE_FS5, NOTE_E5,
+                    NOTE_FS5, NOTE_FS5, NOTE_D5, NOTE_B4, REST, NOTE_B4, REST, NOTE_E5, 
+                    REST, NOTE_E5, REST, NOTE_E5, NOTE_GS5, NOTE_GS5, NOTE_A5, NOTE_B5,
+                    NOTE_A5, NOTE_A5, NOTE_A5, NOTE_E5, REST, NOTE_D5, REST, NOTE_FS5, 
+                    REST, NOTE_FS5, REST, NOTE_FS5, NOTE_E5, NOTE_E5, NOTE_FS5, NOTE_E5};
 
+int winner_duration = 215;
+int winner_delay = 215;
+
+
+int loser_notes[5] = {NOTE_C4,NOTE_A3,NOTE_G3,NOTE_E3,NOTE_C3};
+int loser_duration = 150;
+int loser_pause = 100;
+
+Melody JOJO(511, JOJO_notes, JOJO_duration, JOJO_delay);
+Melody WINNER(96, winner_notes,winner_duration,winner_delay);
 Melody START(54, start_notes, start_duration);
+Melody LOSER = {5, loser_notes, loser_duration, loser_pause};

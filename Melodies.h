@@ -5,6 +5,9 @@
 #include "Melody.h"
 
 extern Melody Loser;
+extern Melody START;
+extern Melody WINNER;
+extern Melody LOSER;
 
 
 #endif

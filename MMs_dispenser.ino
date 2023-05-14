@@ -1,127 +1,109 @@
 #include "MMS_dispenser.h"
-//#include "BLED.cpp"
-//#include "motor.cpp"
+#include "BLED.cpp"
+#include "motor.cpp"
 
-#define NOTE_B0  31
-#define NOTE_C1  33
-#define NOTE_CS1 35
-#define NOTE_D1  37
-#define NOTE_DS1 39
-#define NOTE_E1  41
-#define NOTE_F1  44
-#define NOTE_FS1 46
-#define NOTE_G1  49
-#define NOTE_GS1 52
-#define NOTE_A1  55 
-#define NOTE_AS1 58
-#define NOTE_B1  62
-#define NOTE_C2  65
-#define NOTE_CS2 69
-#define NOTE_D2  73
-#define NOTE_DS2 78
-#define NOTE_E2  82
-#define NOTE_F2  87
-#define NOTE_FS2 93
-#define NOTE_G2  98
-#define NOTE_GS2 104
-#define NOTE_A2  110
-#define NOTE_AS2 117
-#define NOTE_B2  123
-#define NOTE_C3  131
-#define NOTE_CS3 139
-#define NOTE_D3  147
-#define NOTE_DS3 156
-#define NOTE_E3  165
-#define NOTE_F3  175
-#define NOTE_FS3 185
-#define NOTE_G3  196
-#define NOTE_GS3 208
-#define NOTE_A3  220
-#define NOTE_AS3 233
-#define NOTE_B3  247
-#define NOTE_C4  262
-#define NOTE_CS4 277
-#define NOTE_D4  294
-#define NOTE_DS4 311
-#define NOTE_E4  330
-#define NOTE_F4  349
-#define NOTE_FS4 370
-#define NOTE_G4  392
-#define NOTE_GS4 415
-#define NOTE_A4  440
-#define NOTE_AS4 466
-#define NOTE_B4  494
-#define NOTE_C5  523
-#define NOTE_CS5 554
-#define NOTE_D5  587
-#define NOTE_DS5 622
-#define NOTE_E5  659
-#define NOTE_F5  698
-#define NOTE_FS5 740
-#define NOTE_G5  784
-#define NOTE_GS5 831
-#define NOTE_A5  880
-#define NOTE_AS5 932
-#define NOTE_B5  988
-#define NOTE_C6  1047
-#define NOTE_CS6 1109
-#define NOTE_D6  1175
-#define NOTE_DS6 1245
-#define NOTE_E6  1319
-#define NOTE_F6  1397
-#define NOTE_FS6 1480
-#define NOTE_G6  1568
-#define NOTE_GS6 1661
-#define NOTE_A6  1760
-#define NOTE_AS6 1865
-#define NOTE_B6  1976
-#define NOTE_C7  2093
-#define NOTE_CS7 2217
-#define NOTE_D7  2349
-#define NOTE_DS7 2489
-#define NOTE_E7  2637
-#define NOTE_F7  2794
-#define NOTE_FS7 2960
-#define NOTE_G7  3136
-#define NOTE_GS7 3322
-#define NOTE_A7  3520
-#define NOTE_AS7 3729
-#define NOTE_B7  3951
-#define NOTE_C8  4186
-#define NOTE_CS8 4435
-#define NOTE_D8  4699
-#define NOTE_DS8 4978
+#define MOTOR_ROTOR_DATA_PIN D5
+#define MOTOR_LOCK_DATA_PIN D3
+#define ENCEINTE_DATA_PIN D7
+#define LED_DATA_PIN D8
+#define ECRAN_DATA_PIN D1
 
-//#define BLED_DATA_PIN D6
-//#define MOTOR_DATA_PIN D7
-/*
-BLED<BLED_DATA_PIN> Banc(BLED_DATA_PIN,6);
-Motor<MOTOR_DATA_PIN> theMOTOR(MOTOR_DATA_PIN);*/
+#define NB_LED 10
+
+
+//DEFINE A MODIFIER
+// ml motor lock
+// mr motor rotor
+#define ml_pos_lock 0    //position de repos qui bloque les MMs
+#define ml_pos_unlock 0  //position de repos qui debloque les MMs
+
+#define mr_pos_repos 0     //DONE   //position de repos
+#define mr_large_recup 0   //position qui recup bcp de MMS
+#define mr_large_give 0    //position qui donnent bcp de MMS
+#define mr_little_recup 0  //position qui recup 1 MMS pour le jeu
+#define mr_little_give 0   //position qui donne le MMS du jeu
+#define mr_color_sensor 0  //position pour id. la couleur du MMS durant le jeu
+
+//tableau du Banc de LED pour proposer les couleurs
+vector<int> choixcouleur = { CRGB::Yellow, CRGB::Orange, CRGB::Blue, CRGB::Green, CRGB::Brown, CRGB::Red, 0, 0, 0, 0 };
+
+BLED<LED_DATA_PIN> Banc(LED_DATA_PIN, NB_LED);
+Motor<MOTOR_ROTOR_DATA_PIN> MOTOR_rotor(MOTOR_ROTOR_DATA_PIN);
+Motor<MOTOR_LOCK_DATA_PIN> MOTOR_lock(MOTOR_LOCK_DATA_PIN);
+
 Speaker LEnceinte(D6);
 
+Display Lecran(D1);
 //vector<int> tabint1  = {0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow};
 //vector<int> tabint2  = {CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE};
 int duration1 = 150;
 int pause = 100;
 
 void setup() {
-  /*Banc.setup();
-  //theMOTOR.setup();*/
+  Banc.setup();
+  MOTOR_rotor.setup();
+  MOTOR_lock.setup();
   LEnceinte.setup();
-  //pinMode(D8,OUTPUT);
-  //LEnceinte.playTone(1500,1500);
-
+  //Lecran.setup();
+  //init du keypad
+  //init color sensor
+  Serial.begin(9600);
+  Serial.println("Setup Done...");
+  delay(5000);
 }
 
 void loop() {
-  //theMOTOR.move2pos(120);
-  //Banc.display(tabint1);
-  //LEnceinte.playTone(1500,1500);
-  LEnceinte.playMelody(Loser);
-  delay(10000);
-  //delay(2500);*/
-  //theMOTOR.move2pos(20);
-  //Banc.display(tabint2);
-  //delay(2500);
-  //delay(10000);
+
+
+  //DEMARRAGE
+  MOTOR_lock.move2pos(ml_pos_lock + 180);
+  MOTOR_rotor.move2pos(0);
+  delay(5000);
+  MOTOR_rotor.move2pos(180);
+  delay(5000);
+
+  LEnceinte.playMelody(LOSER);
+  Banc.display(choixcouleur);
+  /*
+
+  //ATTENTE
+  //LEnceinte.playMelody(attente);
+
+
+  //DISTRIBUTION
+  MOTOR_rotor.move2pos(mr_large_recup); //recup
+  MOTOR_lock.move2pos(ml_pos_unlock);
+  MOTOR_rotor.move2pos(mr_large_give); //distrib
+  MOTOR_lock.move2pos(ml_pos_lock);
+
+
+  //JEU
+  //LEnceinte.playMelody(Jojo);
+
+  //recup 1 MMs
+  MOTOR_rotor.move2pos(mr_little_recup); //recup
+  MOTOR_lock.move2pos(ml_pos_unlock);
+  delay(1000);
+  MOTOR_lock.move2pos(ml_pos_lock);
+  //alignage MMS
+  MOTOR_rotor.move2pos(mr_color_sensor); //recup
+  //couleur = color_sensor.captage();
+
+  //demander choix
+  Lecran.Print("Couleur du MMs ?",1000);
+
+  //choix OK
+  //LEnceinte.playMelody(win);
+  // distribution de tous et de 1 MMS
+
+
+  //choix pas OK
+  //LEnceinte.playMelody(loser);
+  //actualiser tableau de LED pour supprimer une couleur
+
+
+
+  Banc.display(choixcouleur);
+  */
+  //choix
 }
