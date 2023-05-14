@@ -14,6 +14,8 @@ public:
   void Print(String mess, int t);
   Display(int n);
   void setup();
+  void PrintL(String mess);
+  void Clear();
 private:
   rgb_lcd lcd;
 };
