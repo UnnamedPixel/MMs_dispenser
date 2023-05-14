@@ -3,11 +3,18 @@
 
 #include "Actuator.h"
 #import <Arduino.h>
-#include "Melody.h"
+#include "SoftwareSerial.h"
+
+#include <vector>
+using namespace std;
 
 class Keypad : protected Actuator {
+  private:
+  SoftwareSerial SerialCom;
+  public:
+  Keypad(int nport);
   void setup();
-
+  char WaitForEntry();
 };
 
 

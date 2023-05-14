@@ -14,6 +14,7 @@
 
 #include "Melody.h"
 
+#include "KeyPad.h"
 
 
 #endif

@@ -97,28 +97,29 @@
 /*
 BLED<BLED_DATA_PIN> Banc(BLED_DATA_PIN,6);
 Motor<MOTOR_DATA_PIN> theMOTOR(MOTOR_DATA_PIN);*/
-Speaker LEnceinte(D6);
-
+Speaker LEnceinte(D8);
+Keypad Clavier(D7);
 //vector<int> tabint1  = {0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow};
 //vector<int> tabint2  = {CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE};
 int duration1 = 150;
 int pause = 100;
 
 void setup() {
+  Serial.begin(9600);
   /*Banc.setup();
   //theMOTOR.setup();*/
   LEnceinte.setup();
   //pinMode(D8,OUTPUT);
   //LEnceinte.playTone(1500,1500);
-
+  Clavier.setup();
 }
 
 void loop() {
   //theMOTOR.move2pos(120);
   //Banc.display(tabint1);
   //LEnceinte.playTone(1500,1500);
-  LEnceinte.playMelody(Loser);
-  delay(10000);
+  Serial.println(Clavier.WaitForEntry());
+  Serial.println("AAAA");
   //delay(2500);*/
   //theMOTOR.move2pos(20);
   //Banc.display(tabint2);
