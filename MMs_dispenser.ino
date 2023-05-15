@@ -41,8 +41,8 @@
 /*
 BLED<BLED_DATA_PIN> Banc(BLED_DATA_PIN,6);
 Motor<MOTOR_DATA_PIN> theMOTOR(MOTOR_DATA_PIN);*/
-//vector<int> tabint1  = {0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow};
-//vector<int> tabint2  = {CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE};
+vector<int> tabint1 = { 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow };
+vector<int> tabint2 = { CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE };
 vector<int> choixcouleur = { CRGB::Yellow, CRGB::Orange, CRGB::Blue, CRGB::Green, CRGB::Brown, CRGB::Red, 0, 0, 0, 0 };
 
 
@@ -75,28 +75,37 @@ void setup() {
   //DEMARRAGE - a faire une fois
   MOTOR_lock.move2pos(ml_pos_lock);
   MOTOR_rotor.move2pos(mr_pos_little_distr);
-  //LEnceinte.playMelody(START);
+  LEnceinte.playMelody(START);
+  Banc.display(tabint1);
+  delay(1000);
+  Banc.display(tabint2);
+  delay(1000);
   // ajouter clignotement banc de LED
-  // ajouter affichage ecran
+  Lecran.PrintL("Bienvenue !");
 }
 
 char resp = 'M';
 
 void loop() {
-
+  Banc.display(tabint1);
+  Lecran.setColor(255, 255, 0);
   //MENU DU CHOIX
   do {
     resp = 'M';
     Lecran.Clear();
-    Lecran.PrintL("Choix 1\nManger");
+    Lecran.PrintL("Choix 1 :");
     // + clignotement LED
-    Lecran.Clear();
-    delay(1500);
-    Lecran.PrintL("1 - Manger?");
+    Lecran.PrintL("Manger?");
     // + clignotement LED
     delay(1500);
     Lecran.Clear();
-    Lecran.PrintL("2 - Jouer?");
+    Lecran.PrintL("Choix 2 :");
+    Lecran.PrintL("Jouer?");
+    // + clignotement LED
+    delay(1500);
+    Lecran.Clear();
+    Lecran.PrintL("Choix 3 :");
+    Lecran.PrintL("Jouer2?");
     // + clignotement LED
     delay(1500);
     Lecran.Clear();
@@ -104,11 +113,14 @@ void loop() {
     resp = Clavier.WaitForEntry(1000);
     Serial.print("resp:");
     Serial.println(resp);
-  } while ((resp != 'Q') && (resp != '1') && (resp != '2'));
+  } while ((resp != 'Q') && (resp != '1') && (resp != '2') && (resp != '3'));
   delay(2000);
   switch (resp) {
     case '1':
       //DISTRIBUTION
+      Lecran.Clear();
+      Lecran.PrintL("Distribution en cours...");
+
       Serial.println("1111");
       MOTOR_lock.move2pos(ml_pos_lock);
 
@@ -136,13 +148,14 @@ void loop() {
       delay(1000);
       MOTOR_rotor.move2pos(mr_pos_large_distr);
       Serial.println("distrib OK");
-      //MOTOR_rotor.move2pos(mr_pos_large_give);  //distrib
-
+      LEnceinte.playMelody(JOJO);
       delay(5000);
 
       break;
     case '2':
       Serial.println("2222");
+      Distribution(Lecran, MOTOR_rotor, MOTOR_lock, LEnceinte, Banc);
+      
       /*
       //JEU
       //LEnceinte.playMelody(Jojo);
@@ -169,20 +182,70 @@ void loop() {
       LEnceinte.playMelody(LOSER);
       Banc.display(choixcouleur);*/
       break;
-    default:
-      Serial.println("Impossible");
+
+
+    case '3':
+      int nombre_a_deviner;
+      int nombre_essais = 3;
+      Banc.setLEDs(CRGB::Grey);
+      while (nombre_essais != 0) {
+        randomSeed(analogRead(0));         // Initialise la fonction de nombre aléatoire avec une valeur aléatoire
+        nombre_a_deviner = random(0, 10);  // Choisi un nombre aléatoire entre 1 et 10
+        int nombre_devine;
+        Lecran.Clear();
+        Lecran.PrintL("Essai ");
+        Lecran.PrintL(4 - nombre_essais);  // Affiche le numéro d'essai en cours
+        Lecran.PrintL(": ");
+
+        char resp;
+        //LECTURE PAR PAD
+        do {
+          resp = Clavier.WaitForEntry(1000);
+        } while ((resp != '0') && (resp != '1') && (resp != '2') && (resp != '3') && (resp != '4') && (resp != '5') && (resp != '6') && (resp != '7') && (resp != '8') && (resp != '9'));
+        delay(5000);
+        nombre_devine = (int)resp;  // Lit le nombre entré par l'utilisateur
+        nombre_devine -= 48;
+        if (nombre_devine == nombre_a_deviner) {  // Si le nombre est correct
+          //WIN
+          Lecran.setColor(0, 255, 0);
+          LEnceinte.playMelody(WINNER);
+          //LED VERT
+          //distribution
+          break;
+        } else {
+          Lecran.setColor(255, 0, 0);
+          Lecran.Clear();
+          LEnceinte.playMelody(LOSER);
+          Lecran.PrintL("FAUX :  ");
+          //LE NOMBRE A DEVINER EST PLUS GRAND
+          //mi
+          Banc.setLED(nombre_devine,CRGB::Red);
+          if (nombre_devine < nombre_a_deviner) {
+            Lecran.Line(2);
+            Lecran.PrintL("\ntrop petit");
+          } else {  // Si le nombre est plus grand
+            Lecran.Line(2);
+            Lecran.PrintL("\ntrop grand");
+            //LE NOMBRE A DEVINER EST PLUS PETIT
+          }
+          Lecran.Line(1);
+        }
+        nombre_essais--;
+        delay(5000);
+      }
+      Lecran.Clear();
+      Lecran.PrintL("PERDU !!!");
+      //LED ROUGE SAUF LA VRAIE
+      for (int i = 0 ; i < 10 ; i++){
+         Banc.setLED(nombre_a_deviner,CRGB::Orange);
+         delay(400);
+      }
+     
+      for (int i = 0 ; i < 3 ; i++){
+        LEnceinte.playMelody(Loser);
+        delay(400);
+      }
+      delay(5000);
       break;
   }
-  //ATTENTE
-  //LEnceinte.playMelody(attente);
-
-  /*
-
-
-
- 
-
-  Banc.display(choixcouleur);
-  //choix
-  */
 }

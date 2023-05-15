@@ -16,5 +16,6 @@
 
 #include "KeyPad.h"
 
+#include "Dispenser.h"
 
 #endif

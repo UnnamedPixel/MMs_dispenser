@@ -23,6 +23,8 @@ public:
   BLED(int nport, int nbLED);
   void setup();
   void display(vector<int> colortab);
+  void setLED(int Led, int color);
+  void setLEDs(int color);
 };
 
 #endif
