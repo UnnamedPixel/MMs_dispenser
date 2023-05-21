@@ -19,8 +19,6 @@ public:
   void PrintL(int mess);
   void setColor(int R, int G, int B);
   void Line(int line);
-
-private:
   rgb_lcd lcd;
 };
 

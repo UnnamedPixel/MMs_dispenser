@@ -58,6 +58,7 @@ int loser_duration = 150;
 int loser_pause = 100;
 
 Melody JOJO(511, JOJO_notes, JOJO_duration, JOJO_delay);
-Melody WINNER(96, winner_notes,winner_duration,winner_delay);
+Melody shortJOJO(40, JOJO_notes, JOJO_duration, JOJO_delay);
+Melody WINNER(48, winner_notes,winner_duration,winner_delay);
 Melody START(54, start_notes, start_duration);
 Melody LOSER = {5, loser_notes, loser_duration, loser_pause};

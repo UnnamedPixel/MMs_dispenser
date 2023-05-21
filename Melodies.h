@@ -9,6 +9,7 @@ extern Melody START;
 extern Melody WINNER;
 extern Melody LOSER;
 extern Melody JOJO;
+extern Melody shortJOJO;
 
 #endif
 

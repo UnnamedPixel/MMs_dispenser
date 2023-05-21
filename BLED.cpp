@@ -22,10 +22,10 @@ void BLED<N>::setup() {
 template<uint8_t N>
 void BLED<N>::display(vector<int> colortab) {
   int LED2Update;
-  if (colortab.size() < this->nb_led) {
+  if (colortab.size() < this->nb_led+1) {
     LED2Update = colortab.size();
   } else {
-    LED2Update = this->nb_led;
+    LED2Update = this->nb_led+1;
   }
   for (int i = 0; i < LED2Update; i++) {
     leds[i] = colortab[i];
@@ -43,8 +43,12 @@ void BLED<N>::setLED(int Led, int color) {
 
 template<uint8_t N>
 void BLED<N>::setLEDs(int color) {
-  for (int i = 0; i < this->nb_led; i++) {
+  for (int i = 0; i < this->nb_led+1; i++) {
     leds[i] = color;
+    Serial.print("LED n ");
+    Serial.print(i);
+    Serial.print(" en ");
+    Serial.println(color);
   }
   FastLED.show();
 }
