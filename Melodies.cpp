@@ -1,3 +1,4 @@
+//Le fichier "Melodies.cpp" contient les définitions et les initialisations des mélodies pour le distributeur de M&Ms. 
 #include "Melodies.h"
 
 int Loser_notes[5] = { NOTE_C4, NOTE_A3, NOTE_G3, NOTE_E3, NOTE_C3 };

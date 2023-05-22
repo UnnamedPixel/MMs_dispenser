@@ -5,26 +5,19 @@
 #include "Keypad.h"
 #include <FASTLED.h>
 #include "BLED.h"
-
 #include "Motor.h"
-
 #include "Speaker.h"
-
 #include "Melodies.h"
-
 #include "Melody.h"
 
-#define ml_pos_lock 40  //OK   //position de repos qui bloque les MMs
+#define ml_pos_lock 40  //position de repos du locket qui bloque les MMs
+#define ml_pos_unlock 180  //position du locket qui debloque les MMs
+
+#define mr_pos_large_recup 180   //position du rotor qui recupere un grand nombre de MMs
+#define mr_pos_large_distr 0  //position du rotor qui libere un grand nombre de MMs
 
 
-#define mr_pos_large_recup 180   //OK
-#define mr_pos_large_distr 0     //OK
-#define mr_pos_little_distr 180  //OK
-
-#define ml_pos_unlock 180  //position de repos qui debloque les MMs
-
-
-
+// Initialisation des composants du distributeur
 template<uint8_t PINM1, uint8_t PINM2, uint8_t PINBLED>
 void Dispenser_setup(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PINM2>& MOTOR_lock, Speaker& LEnceinte, BLED<PINBLED>& Banc, Keypad& Clavier) {
   Banc.setup();
@@ -36,22 +29,19 @@ void Dispenser_setup(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PINM2>& M
 }
 
 
+// Distribution de MMs
 template<uint8_t PINM1, uint8_t PINM2, uint8_t PINBLED>
 void Distribution(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PINM2>& MOTOR_lock, Speaker& LEnceinte, BLED<PINBLED>& Banc) {
+  
   Banc.setLEDs(0xEE82EE);
-  //DISTRIBUTION
-  delay(5000);
   Lecran.Clear();
   Lecran.PrintL("Distribution...");
+    delay(1000);
   Banc.setLED(0, CRGB::Red);
-
-
-
-  Serial.println("1111");
+  
   MOTOR_lock.move2pos(ml_pos_lock);
 
-  MOTOR_rotor.move2pos(mr_pos_large_recup);  //recup
-  Serial.println("prep distrib OK");
+  MOTOR_rotor.move2pos(mr_pos_large_recup);
   delay(1000);
   Banc.setLED(1, CRGB::Red);
 
@@ -59,14 +49,11 @@ void Distribution(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PINM2>& MOTO
   Banc.setLED(2, CRGB::Red);
 
   MOTOR_lock.move2pos(ml_pos_unlock);
-  Serial.println("unlock OK");
 
-  //TREMBLEMENTS
   delay(1000);
   Banc.setLED(3, CRGB::Red);
 
-
-  Serial.println("debut tremblements");
+  //TREMBLEMENTS LOCK
   MOTOR_lock.move2pos(0);
   delay(1000);
   Banc.setLED(4, CRGB::Red);
@@ -81,10 +68,10 @@ void Distribution(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PINM2>& MOTO
   delay(100);
 
   MOTOR_lock.move2pos(ml_pos_unlock);
-  Serial.println("fin tremblements");
   delay(1000);
   Banc.setLED(7, CRGB::Red);
-  //FIN TREMBLEMENTS
+  //FIN TREMBLEMENTS LOCK
+
   MOTOR_lock.move2pos(ml_pos_lock);
   delay(1000);
   Banc.setLED(8, CRGB::Red);
@@ -100,16 +87,18 @@ void Distribution(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PINM2>& MOTO
   delay(200);
 
   MOTOR_rotor.move2pos(mr_pos_large_distr);
-  Serial.println("distrib OK");
   Lecran.Clear();
   Banc.setLED(9, CRGB::Red);
   Banc.setLED(10, CRGB::Red);
   Lecran.PrintL("Bon appetit !");
   LEnceinte.playMelody(shortJOJO);
-  delay(5000);
+  delay(3000);
+  Lecran.lcd.noBlinkLED();
+
 }
 
 
+// Jeu devinette d'un nombre entre 1 et 10
 template<uint8_t PINM1, uint8_t PINM2, uint8_t PINBLED>
 void Game_Number_guess(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PINM2>& MOTOR_lock, Speaker& LEnceinte, BLED<PINBLED>& Banc, Keypad& Clavier) {
   int nombre_essais = 3;
@@ -120,25 +109,19 @@ void Game_Number_guess(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PINM2>&
   Banc.setLEDs(CRGB::Grey);
   randomSeed(analogRead(0));         // Initialise la fonction de nombre aléatoire avec une valeur aléatoire
   nombre_a_deviner = random(0, 10);  // Choisi un nombre aléatoire entre 1 et 10
-  Serial.print("A DEVINER:");
-  Serial.print(nombre_a_deviner);
   while (nombre_essais != 0) {
     Lecran.Clear();
     Lecran.PrintL("Essai ");
     Lecran.PrintL(4 - nombre_essais);  // Affiche le numéro d'essai en cours
     Lecran.PrintL(": ");
     char resp;
-    //LECTURE PAR PAD
     do {
       resp = Clavier.WaitForEntry(1000);
     } while ((resp != '0') && (resp != '1') && (resp != '2') && (resp != '3') && (resp != '4') && (resp != '5') && (resp != '6') && (resp != '7') && (resp != '8') && (resp != '9'));
     delay(1500);
     nombre_devine = (int)resp;  // Lit le nombre entré par l'utilisateur
     nombre_devine -= 48;
-    Serial.print("essai sur nb :");
-    Serial.print(nombre_devine);
     if (nombre_devine == nombre_a_deviner) {  // Si le nombre est correct
-      //WIN
       Lecran.setColor(0, 255, 0);
       Lecran.lcd.blinkLED();
       Lecran.Clear();
@@ -156,21 +139,18 @@ void Game_Number_guess(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PINM2>&
       Lecran.Clear();
       LEnceinte.playMelody(LOSER);
       Lecran.PrintL("FAUX :  ");
-      //LE NOMBRE A DEVINER EST PLUS GRAND
-      //mi
       Banc.setLED(nombre_devine - 1, CRGB::Red);
       if (nombre_devine < nombre_a_deviner) {
         Lecran.Line(2);
         Lecran.PrintL("trop petit");
-      } else {  // Si le nombre est plus grand
+      } else {
         Lecran.Line(2);
         Lecran.PrintL("trop grand");
-        //LE NOMBRE A DEVINER EST PLUS PETIT
-      }
+              }
       Lecran.Line(1);
     }
     nombre_essais--;
-    delay(1500);
+    delay(3000);
   }
   if (gagne == false) {
     Lecran.Clear();
@@ -198,7 +178,6 @@ void Game_Number_guess(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PINM2>&
 template<uint8_t PINM1, uint8_t PINM2, uint8_t PINBLED>
 void Game_Color_guess(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PINM2>& MOTOR_lock, Speaker& LEnceinte, BLED<PINBLED>& Banc, Keypad& Clavier) {
   Banc.setLEDs(CRGB::Red);
-  Serial.print("22222");
   Lecran.Clear();
   Lecran.PrintL("Desole");
   Lecran.Line(2);
@@ -212,15 +191,13 @@ extern void Dispenser_start(Display& Lecran, Motor<PINM1>& MOTOR_rotor, Motor<PI
   vector<int> tabint1 = { 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow };
   vector<int> tabint2 = { CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE, CRGB::Yellow, 0xEE82EE };
   vector<int> choixcouleur = { CRGB::Yellow, CRGB::Orange, CRGB::Blue, CRGB::Green, CRGB::Brown, CRGB::Red, 0, 0, 0, 0 };
-  //DEMARRAGE - a faire une fois
   MOTOR_lock.move2pos(ml_pos_lock);
-  MOTOR_rotor.move2pos(mr_pos_little_distr);
+  MOTOR_rotor.move2pos(mr_pos_large_recup);
   LEnceinte.playMelody(START);
   Banc.display(tabint1);
   delay(1000);
   Banc.display(tabint2);
   delay(1000);
-  // ajouter clignotement banc de LED
   Lecran.PrintL("Bienvenue !");
 }
 

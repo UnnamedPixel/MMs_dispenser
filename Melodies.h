@@ -1,3 +1,5 @@
+//Le fichier "Melodies.cpp" contient les définitions et les initialisations des mélodies pour le distributeur de M&Ms. 
+
 #ifndef MELODIES_H
 #define MELODIES_H
 
